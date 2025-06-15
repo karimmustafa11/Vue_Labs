@@ -1,10 +1,10 @@
 <template>
-    <div style="width: 150px; padding: 1rem;">
-        <ul style="list-style: none; padding: 0;">
-            <li><a href="#" style="background: #007bff; color: white; display: block; ">Home</a></li>
-            <li><a href="#" style=" display: block;">Contact</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Gallery</a></li>
-        </ul>
-    </div>
+  <div style="width: 150px; padding: 1rem;">
+    <ul style="list-style: none; padding: 0;">
+      <li><router-link to="/" style="background: #007bff; color: white; display: block;">Home</router-link></li>
+      <li><router-link to="/contact" style="display: block;">Contact</router-link></li>
+      <li><router-link to="/about">About</router-link></li>
+      <li><router-link to="/gallery">Gallery</router-link></li>
+    </ul>
+  </div>
 </template>
