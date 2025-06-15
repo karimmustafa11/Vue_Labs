@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vue JS Lab One</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Vue JS -->
+    <script src="./vueversion3.js"></script>
+    <script src="./books.js"></script>
+    <style>
+        .less {
+            border: 6px solid #dc3545;
+        }
+
+        .more {
+            border: 6px solid #198754;
+        }
+
+        .book-img {
+            object-fit: cover;
+            height: 200px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="mainapp" class="container my-4">
+        <h1 class="mb-4">Vue JS Lab One</h1>
+        <h3>Book List</h3>
+        <ul class="list-group mb-4">
+            <li v-for="book in books" :key="book.ISBN"
+                class="list-group-item d-flex justify-content-between align-items-center">
+                <span>{{ book.Name }}</span>
+                <span class="badge bg-primary">{{ book.author }}</span>
+            </li>
+        </ul>
+
+        <!-- Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-4" v-for="book in books" :key="book.ISBN">
+                <div class="card h-100" :class="book.numberofpage < 50 ? 'less' : 'more'">
+                    <img :src="book.image" class="card-img-top book-img" :alt="book.Name">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ book.Name }}</h5>
+                        <div class="row mb-2">
+                            <div class="col-6"><span class="badge bg-info w-100">{{ book.category }}</span></div>
+                            <div class="col-6"><span class="badge bg-secondary w-100">{{ book.author }}</span></div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-6"><span class="badge bg-warning text-dark w-100">#{{ book.numberofpage }}
+                                    Pages</span></div>
+                            <div class="col-6"><span class="badge bg-success w-100">{{ formatPrice(book.price) }}</span>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-6"><span class="badge bg-dark w-100">ISBN: {{ book.ISBN }}</span></div>
+                            <div class="col-6"><button class="btn btn-primary w-100" @click="addToWishlist(book)">Add To
+                                    List</button></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Wishlist Table -->
+        <button class="btn btn-outline-success mb-3" @click="showWishlist = !showWishlist">Display Wish List</button>
+        <div v-if="showWishlist">
+            <h3>Wish List</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Author</th>
+                        <th>Category</th>
+                        <th>Pages</th>
+                        <th>Price</th>
+                        <th>ISBN</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="book in wishlist" :key="book.ISBN">
+                        <td><img :src="book.image" alt="img" style="height:40px;width:40px;object-fit:cover;"></td>
+                        <td>{{ book.Name }}</td>
+                        <td>{{ book.author }}</td>
+                        <td>{{ book.category }}</td>
+                        <td>{{ book.numberofpage }}</td>
+                        <td>{{ formatPrice(book.price) }}</td>
+                        <td>{{ book.ISBN }}</td>
+                        <td><button class="btn btn-danger btn-sm" @click="removeFromWishlist(book.ISBN)">Remove</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const app = Vue.createApp({
+            data: () => ({
+                books: books,
+                wishlist: [],
+                showWishlist: false
+            }),
+            methods: {
+                addToWishlist(book) {
+                    if (!this.wishlist.find(b => b.ISBN === book.ISBN)) {
+                        this.wishlist.push(book);
+                    }
+                },
+                removeFromWishlist(isbn) {
+                    this.wishlist = this.wishlist.filter(b => b.ISBN !== isbn);
+                },
+                formatPrice(price) {
+                    return new Intl.NumberFormat('ar-SA', { style: 'currency', currency: 'EGP' }).format(price);
+                }
+            }
+        });
+        app.mount('#mainapp');
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Vue Multi Step Form</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <style>
+        .container {
+            border: 1px solid #aaa;
+            padding: 20px;
+            max-width: 500px;
+            margin: auto;
+            border-radius: 10px;
+        }
+
+        .btn {
+            padding: 10px;
+            width: 100%;
+            margin-top: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            border-radius: 5px;
+        }
+
+        .btn-blue {
+            background-color: #007bff;
+        }
+
+        .btn-yellow {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        .error {
+            color: red;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div class="container">
+            <h2 style="text-align: center; color: #007bff">User Data</h2>
+
+            <!-- Step 1 -->
+            <div v-if="step === 1">
+                <label>Title:</label>
+                <input v-model="form.title" type="text" placeholder="Enter title" title="Title" />
+                <div class="error" v-if="!form.title && triedNext">Title is required</div>
+
+                <label>Content:</label>
+                <input v-model="form.content" type="text" title="Content" placeholder="Enter content" />
+                <div class="error" v-if="!form.content && triedNext">Content is required</div>
+
+                <label>Category:</label><br />
+                <div v-for="cat in categories" :key="cat">
+                    <input type="radio" :value="cat" v-model="form.category" placeholder="Category" /> {{ cat }}
+                </div>
+                <div class="error" v-if="!form.category && triedNext">Category is required</div>
+
+                <label>Series:</label>
+                <select v-model="form.series">
+                    <option value="">-- Select --</option>
+                    <option value="S1">S1</option>
+                    <option value="S2">S2</option>
+                </select>
+                <div class="error" v-if="!form.series && triedNext">Series is required</div>
+
+                <label>Share on:</label><br />
+                <div v-for="option in shareOptions" :key="option">
+                    <input type="checkbox" :value="option" v-model="form.shareon" /> {{ option }}
+                </div>
+
+                <label>
+                    <input type="checkbox" v-model="form.shareImmediately" />
+                    Share Immediately
+                </label>
+
+                <button class="btn btn-blue" @click="goNext">Next</button>
+            </div>
+
+            <!-- Step 2 -->
+            <div v-else-if="step === 2">
+                <p><strong>Title:</strong> {{ form.title }}</p>
+                <p><strong>Content:</strong> {{ form.content }}</p>
+                <p><strong>Category:</strong> {{ form.category }}</p>
+                <p><strong>Series:</strong> {{ form.series }}</p>
+                <p><strong>Share Immediately:</strong> {{ form.shareImmediately ? 'immediately' : 'later' }}</p>
+                <p><strong>Share on:</strong> {{ form.shareon.join(', ') || 'None' }}</p>
+
+                <button class="btn btn-blue" @click="step = 1">Prev</button>
+                <button class="btn btn-yellow" @click="submit">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp } = Vue;
+
+        createApp({
+            data() {
+                return {
+                    step: 1,
+                    triedNext: false,
+                    form: {
+                        title: '',
+                        content: '',
+                        category: '',
+                        series: '',
+                        shareImmediately: false,
+                        shareon: []
+                    },
+                    categories: ['Testing', 'Developing', 'Networking', 'Designing'],
+                    shareOptions: ['Facebook', 'Twitter', 'LinkedIN', 'Instagram']
+                };
+            },
+            methods: {
+                goNext() {
+                    this.triedNext = true;
+                    if (this.form.title && this.form.content && this.form.category && this.form.series) {
+                        this.step = 2;
+                        this.triedNext = false;
+                    }
+                },
+                submit() {
+                    alert('Form submitted successfully!');
+                    console.log(this.form);
+                }
+            }
+        }).mount('#app');
+    </script>
+</body>
+
+</html>
